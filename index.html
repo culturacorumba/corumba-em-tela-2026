@@ -99,6 +99,28 @@
     margin:0 auto;
     padding: 20px 24px 70px;
   }
+  .encerrado{
+    text-align:center;
+    max-width:560px;
+    margin:60px auto;
+    padding:40px 32px;
+    border:3px solid var(--ink);
+    background:var(--cream);
+  }
+  .encerrado h2{
+    font-family:'Anton',sans-serif;
+    font-weight:400;
+    text-transform:uppercase;
+    color:var(--terracotta);
+    font-size:clamp(26px,5vw,36px);
+    margin:0 0 16px;
+  }
+  .encerrado p{
+    font-size:15px;
+    line-height:1.6;
+    color:var(--ink);
+    margin:0;
+  }
   .galeria{
     display:grid;
     grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
@@ -161,6 +183,7 @@
     cursor:pointer;
   }
   .votar:hover{ background:var(--terracotta-dark); }
+  .votar:disabled{ background:var(--cream-dark); color:var(--muted); cursor:not-allowed; }
 
   /* ---------- rodapé ---------- */
   footer{
@@ -266,11 +289,13 @@
   <div class="edital">EDITAL Nº 13/2026 — FCC</div>
   <h1 class="titulo">Corumbá em Tela<br><span class="ano">2026</span></h1>
   <div class="subtitulo">Concurso de Pintura em Tela — Cores e Formas do Pantanal</div>
-  <p class="intro">Vote na pintura que mais te representa entre as <strong>18 obras</strong> inscritas no concurso, feito para retratar as paisagens, a biodiversidade e as tradições do Pantanal. Cada CPF pode registrar <strong>um voto</strong>.</p>
 </div>
 
 <main>
-  <div class="galeria" id="galeria"></div>
+  <div class="encerrado">
+    <h2>Votações encerradas</h2>
+    <p>O resultado final será divulgado no dia 21 de setembro, no Palco Avenida, após o desfile cívico-militar do aniversário de Corumbá.</p>
+  </div>
 </main>
 
 <footer>
@@ -334,6 +359,9 @@ let meuVotoInfo = null;
 // Cole aqui depois de implantar — sem isso o botão de votar avisa que ainda não está conectado.
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbytOsYPQoTpcpTZMtXFoy3R8101b-mAeiZ5Q7hfWkuIHbVgd5tA-8evfclxqIHyPhO1lA/exec';
 
+// Votação encerrada — deixa false quando abrir de novo (se um dia precisar)
+const VOTACAO_ENCERRADA = true;
+
 function renderGaleria(){
   document.getElementById('galeria').innerHTML = OBRAS.map(o=>`
     <div class="quadro">
@@ -349,7 +377,10 @@ function renderGaleria(){
       <div class="placa">
         <p class="placa-titulo">${o.nome}</p>
         <p class="placa-autor">${o.autor}</p>
-        <button class="votar" onclick="abrirModal(${o.id})">Votar nesta obra</button>
+        ${VOTACAO_ENCERRADA
+          ? `<button class="votar" disabled>Votação encerrada</button>`
+          : `<button class="votar" onclick="abrirModal(${o.id})">Votar nesta obra</button>`
+        }
       </div>
     </div>
   `).join('');
@@ -510,7 +541,6 @@ function checarMeuVoto(){
   }catch(e){ /* localStorage indisponível neste preview — funciona normalmente no site publicado */ }
 }
 
-renderGaleria();
 checarMeuVoto();
 </script>
 </body>
